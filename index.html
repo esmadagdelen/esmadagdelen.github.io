@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hava Durumu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: 	#000033;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        #weather {
+            text-align: center;
+            background-color: 	#8FD8D8 ;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        .temp {
+            font-size: 40px;
+            margin-top: 10px;
+        }
+        .description {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        #weatherIcon {
+            margin-top: 20px;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="weather">
+        <h1>☁️ ⛈️ HAVA DURUMU ☀️
+            🌈        
+        </h1>
+        <div id="location">🌐Şehir : --</div>
+        <div id="temperature" class="temp">🌡️Sıcaklık : --</div>
+        <div id="description" class="description">Hava Durumu : --</div>
+        <input type="text" id="city" placeholder="Şehir adı girin" />
+        <button onclick="getWeather()">Hava Durumunu Göster</button>
+        <img id="weatherIcon" src="" alt="Weather Icon" />
+    </div>
+
+    <script>
+        function getWeather() {
+            const city = document.getElementById("city").value; // Kullanıcının girdiği şehir adı
+            const apiKey = 'bd5e378503939ddaee76f12ad7a97608';  // Verdiğiniz API anahtarını burada kullanıyoruz
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=tr`;
+
+            // API'ye istek gönderme
+            fetch(url)
+                .then(response => response.json())  // JSON verisini al
+                .then(data => {
+                    if (data.cod === 200) {
+                        // Veriyi başarıyla aldıysak
+                        document.getElementById("location").innerText = ` * ${data.name} * Şehrinin Hava Durumu`;
+                        document.getElementById("temperature").innerText = `Sıcaklık: ${data.main.temp}°C`;
+                        document.getElementById("description").innerText = `HAVA  -->  ${data.weather[0].description}`;
+
+                        // Hava durumu simgesini eklemek için
+                        const iconCode = data.weather[0].icon;  // Icon kodunu al
+                        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`; // Icon URL'sini oluştur
+                        document.getElementById("weatherIcon").src = iconUrl;  // Iconu ekranda göster
+                    } else {
+                        // Eğer şehir bulunamazsa
+                        alert("Şehir bulunamadı!");
+                    }
+                })
+                .catch(error => {
+                    console.log('Hata:', error);  // Hata durumunda konsola yazdır
+                    alert("Bir hata oluştu.");
+                });
+        }
+    </script>
+</body>
+</html>
